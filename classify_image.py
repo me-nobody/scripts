@@ -89,18 +89,18 @@ def cell_types(test_class_df):
         logger.info(f"percentage of tumor cells {percent_tumor}")    
 
 
-def relabel_image(class_df):
+def relabel_image(class_df,label_image):
     # extract the 2 columns of the label dataframe as arrays
-    label_objects = test_classes.loc[:,'label']
-    labels_class = test_classes.loc[:,'class']+1 # upindex the classes to remove 0 as a class
+    label_objects = class_df.loc[:,'Label']
+    labels_class = class_df.loc[:,'class']+1 # upindex the classes to remove 0 as a class
     # create a dictionary with labels as key and class as value
     label_dict ={}
     for label_,class_ in zip(label_objects,labels_class):
         label_dict[label_]=class_
     # create a new array of the same dimensions as label image
-    new_class_labels = np.zeros_like(labels)
+    new_class_labels = np.zeros_like(label_image)
     # the label image and its copy are 2-D. flatten them to reduce search space while re-assigning the array
-    flat_labels=labels.flatten()
+    flat_labels=label_image.flatten()
     flat_new_labels = new_class_labels.flatten()
     # assign the class in dictionary to the label in the label image. here idx is the actual value in the flattened
     # label image and count is the position of that value
@@ -108,18 +108,26 @@ def relabel_image(class_df):
         if idx > 0 and idx in label_dict.keys():
             flat_new_labels[count] = label_dict[idx]      # set the value of new labels as the value of label dictionary
     # reshape the new label image to the original shape
-    new_labels =flat_new_labels.reshape(labels.shape)   
+    new_labels =flat_new_labels.reshape(label_image.shape)   
     return new_labels
 
 if __name__ == "__main__":
     logger.info("start")
-    assert LBL_IMG is not None,logger.info(f"label image not found")
+    try:
+        os.path.join(OUT,LBL_IMG)
+        logger.info(f"{LBL_IMG} image file recongnized")
+    except AssertionError as err:
+        logger.info(f"label image not found")
     label_image = read_label(LBL_IMG)
     assert input_csv is not None,logger.info(f"input csv not found")
     test_class_df = predict_class(input_csv,model)
-    new_label_image = relabel_image(test_class_df)
-    assert test_class_df is not None,logger.info(f"prediction dataframe missing")
-    cell_types(test_class_df)
-    assert new_label_image is not None,logger.info(f"relablled image missing")
+    new_label_image = relabel_image(test_class_df,label_image)
+    assert new_label_image is not None,logger.info(f"relablled image missing")    
     io.imsave(fname=os.path.join(OUT,"classfied_image.png"),arr=new_label_image)
-
+    try:
+        isinstance(test_class_df,pd.DataFrame)
+        logger.info(f"test dataframe detected")
+    except AssertionError as err:
+        logger.info(f"test dataframe not found")    
+    cell_types(test_class_df)
+    
