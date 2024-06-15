@@ -70,7 +70,7 @@ def cell_types(test_class_df):
     class_dict = {0:'normal',1:'tumor'}
     test_class_df['class'] = test_class_df['class'].map(class_dict)
     for a in df['class'].value_counts().items():
-        logger.info(f"class{a[0] has {a[1] nuclei}}")
+        logger.info(f"class{a[0]} has {a[1]} nuclei")
         percent_tumor =0.0
         if a[0] == 'tumor':
             percent_tumor = (int(a[1])/test_class_df.shape[0])*100
@@ -103,4 +103,5 @@ if __name__ == "__main__":
     label_image = read_label(LBL_IMG)
     test_class_df = predict_class(input_csv)
     new_label_image = relabel_image(test_class_df)
+    cell_types(test_class_df)
     io.imsave(fname=os.path.join(OUT,"classfied_image.png"),arr=new_label_image)
