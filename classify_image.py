@@ -48,7 +48,7 @@ def read_label(LBL_IMG):
     labels = io.imread(img_file)
     return labels
 
-def predict_class(input_csv):
+def predict_class(input_csv,model):
     logger.info("predicting class")
     # get the features list
     csv_file = os.path.join(OUT,input_csv)
@@ -115,6 +115,7 @@ if __name__ == "__main__":
     assert LBL_IMG is not None,logger.info(f"label image not found")
     label_image = read_label(LBL_IMG)
     assert input_csv is not None,logger.info(f"input csv not found")
+
     test_class_df = predict_class(input_csv)
     new_label_image = relabel_image(test_class_df)
     assert test_class_df is not None,logger.info(f"prediction dataframe missing")
