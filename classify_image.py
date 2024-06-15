@@ -21,7 +21,7 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 
 log_file = '/users/ad394h/Documents/nuclei_segment/logs/classify_image_{}.txt'.format(timestr)
 
-logging.basicConfig(filename=log_file, filemode='a',level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 scaler = MinMaxScaler()
@@ -32,6 +32,8 @@ OUT = "/users/ad394h/Documents/nuclei_segment/data/"
 
 MODEL_PATH = "/users/ad394h/Documents/nuclei_segment/models/"
 
+x_train = "X_train.csv"
+
 LBL_IMG = "predicted_image_label.tiff"
 input_csv = "tumor_features.csv"
 
@@ -41,18 +43,26 @@ model = os.path.join(MODEL_PATH,model)
 
 
 def read_label(LBL_IMG):
-    file = os.path.join(IN,LBL_IMG)
-    labels = io.imread(file)
+    logger.info("reading file")
+    img_file = os.path.join(IN,LBL_IMG)
+    labels = io.imread(img_file)
     return labels
 
 def predict_class(input_csv):
+    logger.info("predicting class")
     # get the features list
-    file = os.path.join(OUT,input_csv)
-    test_img_ft = pd.read_csv(file)
+    csv_file = os.path.join(OUT,input_csv)
+    if isinstance(csv_file,csv_file):
+        logger.info(f"input csv file read")
+    test_img_ft = pd.read_csv(csv_file)
     # extract the image labels
-    test_img_ft_labels = test_img_ft[["label"]]
+    test_img_ft_labels = test_img_ft[["Label"]]
     test_img_ft.drop('Label',axis=1,inplace=True)
     # scale the variables
+    train = pd.read_csv(OUT,x_train)
+    if isinstance(csv_file,train):
+        logger.info(f"scaling train csv file read")
+    train = scaler.fit_transform(train)
     test_img_ft = scaler.transform(test_img_ft)
     # load the classifier
     model = load(model)
@@ -61,6 +71,8 @@ def predict_class(input_csv):
     predictions = model.predict(test_img_ft)
     predictions = pd.DataFrame(predictions,columns=["class"])
     test_classes = pd.merge(test_img_ft_labels,predictions,left_index=True,right_index=True)
+    test_classes.to_csv(os.path.join(OUT,"test_classes.csv"))
+    logger.info(f"columns are {test_classes.columns}")
     return test_classes
 
 def cell_types(test_class_df):
@@ -97,6 +109,7 @@ def relabel_image(class_df):
     return new_labels
 
 if __name__ == "__main__":
+    logger.info("start")
     assert LBL_IMG is not None,logger.info(f"label image not found")
     label_image = read_label(LBL_IMG)
     assert input_csv is not None,logger.info(f"input csv not found")
@@ -106,3 +119,4 @@ if __name__ == "__main__":
     cell_types(test_class_df)
     assert new_label_image is not None,logger.info(f"relablled image missing")
     io.imsave(fname=os.path.join(OUT,"classfied_image.png"),arr=new_label_image)
+
