@@ -37,7 +37,7 @@ x_train = "X_train.csv"
 LBL_IMG = "predicted_image_label.tiff"
 input_csv = "tumor_features.csv"
 
-model = "adaboost_tumor.joblib"
+model = "adaboost_tumor_pkl.pkl"
 
 model = os.path.join(MODEL_PATH,model)
 
@@ -67,7 +67,8 @@ def predict_class(input_csv,model):
     train = scaler.fit_transform(train)
     test_img_ft = scaler.transform(test_img_ft)
     # load the classifier
-    model = load(model)
+    with open(model,'rb') as f:
+        model = pickle.load(f)
     assert model is not None,f"model not loaded properly"
     # get predictions
     predictions = model.predict(test_img_ft)
