@@ -40,8 +40,6 @@ model = "adaboost_tumor.joblib"
 model = os.path.join(MODEL_PATH,model)
 
 
-
-
 def read_label(LBL_IMG):
     file = os.path.join(IN,LBL_IMG)
     labels = io.imread(file)
@@ -79,7 +77,7 @@ def cell_types(test_class_df):
 
 def relabel_image(class_df):
     # extract the 2 columns of the label dataframe as arrays
-    label_objects = test_classes.loc[:,'Label']
+    label_objects = test_classes.loc[:,'label']
     labels_class = test_classes.loc[:,'prediction']+1 # upindex the classes to remove 0 as a class
     # create a dictionary with labels as key and class as value
     label_dict ={}
@@ -100,6 +98,7 @@ def relabel_image(class_df):
     return new_labels
 
 if __name__ == "__main__":
+
     label_image = read_label(LBL_IMG)
     test_class_df = predict_class(input_csv)
     new_label_image = relabel_image(test_class_df)
