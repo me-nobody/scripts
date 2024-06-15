@@ -81,7 +81,7 @@ def predict_class(input_csv,model):
 def cell_types(test_class_df):
     class_dict = {0:'normal',1:'tumor'}
     test_class_df['class'] = test_class_df['class'].map(class_dict)
-    for a in df['class'].value_counts().items():
+    for a in test_class_df['class'].value_counts().items():
         logger.info(f"class{a[0]} has {a[1]} nuclei")
         percent_tumor =0.0
         if a[0] == 'tumor':
