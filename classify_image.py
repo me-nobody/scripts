@@ -52,15 +52,16 @@ def predict_class(input_csv):
     logger.info("predicting class")
     # get the features list
     csv_file = os.path.join(OUT,input_csv)
-    if isinstance(csv_file,csv_file):
+    if os.path.isfile(csv_file):
         logger.info(f"input csv file read")
     test_img_ft = pd.read_csv(csv_file)
     # extract the image labels
     test_img_ft_labels = test_img_ft[["Label"]]
     test_img_ft.drop('Label',axis=1,inplace=True)
     # scale the variables
-    train = pd.read_csv(OUT,x_train)
-    if isinstance(csv_file,train):
+    train = os.path.join(OUT,x_train)
+    train = pd.read_csv(train)
+    if os.path.isfile(train):
         logger.info(f"scaling train csv file read")
     train = scaler.fit_transform(train)
     test_img_ft = scaler.transform(test_img_ft)
