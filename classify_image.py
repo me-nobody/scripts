@@ -86,7 +86,7 @@ def cell_types(test_class_df):
         percent_tumor =0.0
         if a[0] == 'tumor':
             percent_tumor = (int(a[1])/test_class_df.shape[0])*100
-        logger.info(f"percentage of tumor cells {percent_tumor}")    
+            logger.info(f"percentage of tumor cells {percent_tumor}")    
 
 
 def relabel_image(class_df,label_image):
