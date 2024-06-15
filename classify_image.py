@@ -43,7 +43,6 @@ model = os.path.join(MODEL_PATH,model)
 def read_label(LBL_IMG):
     file = os.path.join(IN,LBL_IMG)
     labels = io.imread(file)
-    assert labels is not None,f"image not loaded properly"
     return labels
 
 def predict_class(input_csv):
@@ -78,7 +77,7 @@ def cell_types(test_class_df):
 def relabel_image(class_df):
     # extract the 2 columns of the label dataframe as arrays
     label_objects = test_classes.loc[:,'label']
-    labels_class = test_classes.loc[:,'prediction']+1 # upindex the classes to remove 0 as a class
+    labels_class = test_classes.loc[:,'class']+1 # upindex the classes to remove 0 as a class
     # create a dictionary with labels as key and class as value
     label_dict ={}
     for label_,class_ in zip(label_objects,labels_class):
@@ -98,9 +97,12 @@ def relabel_image(class_df):
     return new_labels
 
 if __name__ == "__main__":
-
+    assert LBL_IMG is not None,logger.info(f"label image not found")
     label_image = read_label(LBL_IMG)
+    assert input_csv is not None,logger.info(f"input csv not found")
     test_class_df = predict_class(input_csv)
     new_label_image = relabel_image(test_class_df)
+    assert test_class_df is not None,logger.info(f"prediction dataframe missing")
     cell_types(test_class_df)
+    assert new_label_image is not None,logger.info(f"relablled image missing")
     io.imsave(fname=os.path.join(OUT,"classfied_image.png"),arr=new_label_image)
