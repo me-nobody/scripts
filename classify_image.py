@@ -61,7 +61,8 @@ def predict_class(input_csv):
     # scale the variables
     train = os.path.join(OUT,x_train)
     train = pd.read_csv(train)
-    if os.path.isfile(train):
+    train.columns = test_img_ft.columns
+    if isinstance(train,pd.DataFrame):
         logger.info(f"scaling train csv file read")
     train = scaler.fit_transform(train)
     test_img_ft = scaler.transform(test_img_ft)
