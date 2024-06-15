@@ -84,7 +84,7 @@ def relabel_image(class_df):
     # create a dictionary with labels as key and class as value
     label_dict ={}
     for label_,class_ in zip(label_objects,labels_class):
-    label_dict[label_]=class_
+        label_dict[label_]=class_
     # create a new array of the same dimensions as label image
     new_class_labels = np.zeros_like(labels)
     # the label image and its copy are 2-D. flatten them to reduce search space while re-assigning the array
@@ -93,8 +93,8 @@ def relabel_image(class_df):
     # assign the class in dictionary to the label in the label image. here idx is the actual value in the flattened
     # label image and count is the position of that value
     for count,idx in enumerate(flat_labels):
-    if idx > 0 and idx in label_dict.keys():
-        flat_new_labels[count] = label_dict[idx]      # set the value of new labels as the value of label dictionary
+        if idx > 0 and idx in label_dict.keys():
+            flat_new_labels[count] = label_dict[idx]      # set the value of new labels as the value of label dictionary
     # reshape the new label image to the original shape
     new_labels =flat_new_labels.reshape(labels.shape)   
     return new_labels
