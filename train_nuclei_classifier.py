@@ -79,6 +79,7 @@ def train_data(*vars):
     from sklearn.ensemble import AdaBoostClassifier
     model = AdaBoostClassifier(n_estimators=100, algorithm="SAMME", random_state=0)
     model.fit(X_train, train_targets)
+    # save the model
     joblib.dump(model,os.path.join(MODEL_PATH,"adaboost_tumor.joblib"))
     # get the scores
     # accuracy

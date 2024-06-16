@@ -1,4 +1,3 @@
-
 # import libraries
 from __future__ import print_function, unicode_literals, absolute_import, division
 import sys
@@ -14,8 +13,6 @@ from sklearn.ensemble import AdaBoostClassifier
 
 from skimage import io
 import joblib
-import pickle
-from joblib import load
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
@@ -37,10 +34,7 @@ x_train = "X_train.csv"
 LBL_IMG = "predicted_image_label.tiff"
 input_csv = "tumor_features.csv"
 
-model = "adaboost_tumor_pkl.pkl"
-
-model = os.path.join(MODEL_PATH,model)
-
+model = "adaboost_tumor.joblib"
 
 def read_label(LBL_IMG):
     logger.info("reading file")
@@ -67,8 +61,7 @@ def predict_class(input_csv,model):
     train = scaler.fit_transform(train)
     test_img_ft = scaler.transform(test_img_ft)
     # load the classifier
-    with open(model,'rb') as f:
-        model = pickle.load(f)
+    model = joblib.load(os.path.join(MODEL_PATH,model)
     assert model is not None,f"model not loaded properly"
     # get predictions
     predictions = model.predict(test_img_ft)
