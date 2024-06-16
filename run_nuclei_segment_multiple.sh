@@ -29,7 +29,7 @@ do
     sleep 2
     ############# MY CODE #############
     echo "Hello from $SLURM_JOB_NODELIST"
-    # python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei.py
+    python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei.py
     echo "over with job"
     ############# CHANGE #############
     module purge
@@ -37,7 +37,7 @@ do
     sleep 2
     # ############# MY CODE #############
     echo "Hello from $SLURM_JOB_NODELIST"
-    # python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features.py
+    python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features.py
     echo "over with job"
     ############# CHANGE #############
     module purge
@@ -45,7 +45,7 @@ do
     sleep 2
     # ############# MY CODE #############
     echo "Hello from $SLURM_JOB_NODELIST"
-    # python3 /users/ad394h/Documents/nuclei_segment/scripts/train_classifier_and_classify_nuclei.py
+    python3 /users/ad394h/Documents/nuclei_segment/scripts/train_classifier_and_classify_nuclei.py
     echo "over with job"
     rm /users/ad394h/Documents/nuclei_segment/data/$file
 
