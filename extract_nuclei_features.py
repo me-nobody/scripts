@@ -19,13 +19,13 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 log_file = '/users/ad394h/Documents/nuclei_segment/logs/classify_nuclei.txt'
 
 
-logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
 
 IMG = "image_4_GFP.ndpi_8_18.jpg"
-LABEL = "predicted_image_label.tiff"
+LABEL = f"{IMG}_predicted_image_label.tiff"
 IN = "/users/ad394h/Documents/nuclei_segment/data/"
 OUT = "/users/ad394h/Documents/nuclei_segment/data/"
 
@@ -34,7 +34,7 @@ label_file = os.path.join(OUT,LABEL)
 
 if __name__ == "__main__":
     image = io.imread(img_file)[:,:,0]
-    io.imsave(os.path.join(OUT,"nuclei_features_image.jpeg"),image)
+    io.imsave(os.path.join(OUT,f"{IMG}_nuclei_features.jpg"),image)
     label = io.imread(label_file)
     logger.info(f"image shape {image.shape}")
     logger.info(f"label shape {label.shape}")

@@ -20,7 +20,7 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 
 log_file = '/users/ad394h/Documents/nuclei_segment/logs/classify_nuclei.txt'
 
-logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 scaler = MinMaxScaler()
@@ -33,7 +33,9 @@ DATA_PATH ="/users/ad394h/Documents/nuclei_segment/data/"
 
 MODEL_PATH = "/users/ad394h/Documents/nuclei_segment/models/"
 
-LBL_IMG = "predicted_image_label.tiff"
+IMG = "image_4_GFP.ndpi_8_18.jpg"
+
+LBL_IMG = f"{IMG}_predicted_image_label.tiff"
 input_csv = "nuclei_features.csv"
 
 
@@ -190,7 +192,7 @@ if __name__ == "__main__":
     test_class_df = predict_class(input_csv=input_csv,scaler=scaler,model=model)
     new_label_image = relabel_image(test_class_df,label_image)
     assert new_label_image is not None,logger.info(f"relablled image missing")    
-    io.imsave(fname=os.path.join(OUT,"classfied_image.png"),arr=new_label_image)
+    io.imsave(fname=os.path.join(OUT,f"{IMG}_classified_image.png"),arr=new_label_image)
     try:
         isinstance(test_class_df,pd.DataFrame)
         logger.info(f"test dataframe detected")
