@@ -74,7 +74,7 @@ def predict_class(input_csv,model):
     predictions = model.predict(test_img_ft)
     predictions = pd.DataFrame(predictions,columns=["class"])
     test_classes = pd.merge(test_img_ft_labels,predictions,left_index=True,right_index=True)
-    test_classes.to_csv(os.path.join(OUT,"test_classes.csv"))
+    test_classes.to_csv(os.path.join(OUT,"test_classes.csv"),header=True,index=False)
     logger.info(f"columns are {test_classes.columns}")
     return test_classes
 
@@ -82,7 +82,7 @@ def cell_types(test_class_df):
     class_dict = {0:'normal',1:'tumor'}
     test_class_df['class'] = test_class_df['class'].map(class_dict)
     for a in test_class_df['class'].value_counts().items():
-        logger.info(f"class{a[0]} has {a[1]} nuclei")
+        logger.info(f"class {a[0]} has {a[1]} nuclei")
         percent_tumor =0.0
         if a[0] == 'tumor':
             percent_tumor = (int(a[1])/test_class_df.shape[0])*100
