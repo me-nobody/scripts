@@ -51,7 +51,7 @@ def prepare_data(*files):
     tumor_df[['type']] = 'tumor'
     normal_df[['type']] = 'normal'
     # create combined dataframe
-    combined = pd.concat([tumor,normal],axis=0)
+    combined = pd.concat([tumor_df,normal_df],axis=0)
     # remove Label column from dataset for further machine learning
     combined = combined.drop('Label',axis=1)
     # Identify input and target columns
