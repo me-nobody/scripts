@@ -22,7 +22,7 @@ echo "check MODEL, X_TRAIN for scaling,INPUT_FEATURES.csv for features, LABEL im
 for file in $(ls /users/ad394h/Documents/nuclei_segment/data/gfp_normal_mixed_images/);
 do 
     echo $file
-    cp /users/ad394h/Documents/nuclei_segment/data/gfp_normal_mixed_images/$file /users/ad394h/Documents/nuclei_segment/data/
+    cp /users/ad394h/Documents/nuclei_segment/data/gfp_positive_images/$file /users/ad394h/Documents/nuclei_segment/data/
     ############# LOADING MODULES (optional) #############
     module purge
     module load libs/stardist/0.9.1
