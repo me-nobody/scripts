@@ -42,7 +42,7 @@ def extract_hematoxylin(IMG):
     deconv_img = hed2rgb(np.stack((img[:,:,0],null,null),axis=-1))
     deconv_img = deconv_img*255
     deconv_img = deconv_img.astype(np.uint8)
-    ski.io.imsave(DECONV_OUT+f"{IMG}_deconv_image.jpg",deconv_img)
+    ski.io.imsave(DECONV_OUT+f"{IMG[:-4]}_deconv_image.jpg",deconv_img)
     return deconv_img
 
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     
     deconv_img = extract_hematoxylin(IMG)
     num_nuclei,img_label = segment_nuclei(deconv_img)
-    inp_image = f"{IMG}_predicted_image_label.tiff"
+    inp_image = f"{IMG[:-4]}_predicted_image_label.tiff"
     io.imsave(os.path.join(DECONV_OUT,inp_image),img_label)
-    logger.info(f"slide {IMG} has {num_nuclei} nuclei")
+    logger.info(f"slide {IMG[:-4]} has {num_nuclei} nuclei")
     

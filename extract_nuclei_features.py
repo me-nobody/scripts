@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 IMG = "image_4_GFP.ndpi_8_18.jpg"
-LABEL = f"{IMG}_predicted_image_label.tiff"
+LABEL = f"{IMG[:-4]}_predicted_image_label.tiff"
 IN = "/users/ad394h/Documents/nuclei_segment/data/"
 OUT = "/users/ad394h/Documents/nuclei_segment/data/"
 
@@ -34,7 +34,7 @@ label_file = os.path.join(OUT,LABEL)
 
 if __name__ == "__main__":
     image = io.imread(img_file)[:,:,0]
-    io.imsave(os.path.join(OUT,f"{IMG}_nuclei_features.jpg"),image)
+    io.imsave(os.path.join(OUT,f"{IMG[:-4]}_nuclei_features.jpg"),image)
     label = io.imread(label_file)
     logger.info(f"image shape {image.shape}")
     logger.info(f"label shape {label.shape}")

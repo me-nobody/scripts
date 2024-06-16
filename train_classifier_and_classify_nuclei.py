@@ -35,7 +35,7 @@ MODEL_PATH = "/users/ad394h/Documents/nuclei_segment/models/"
 
 IMG = "image_4_GFP.ndpi_8_18.jpg"
 
-LBL_IMG = f"{IMG}_predicted_image_label.tiff"
+LBL_IMG = f"{IMG[:-4]}_predicted_image_label.tiff"
 input_csv = "nuclei_features.csv"
 
 
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     test_class_df = predict_class(input_csv=input_csv,scaler=scaler,model=model)
     new_label_image = relabel_image(test_class_df,label_image)
     assert new_label_image is not None,logger.info(f"relablled image missing")    
-    io.imsave(fname=os.path.join(OUT,f"{IMG}_classified_image.png"),arr=new_label_image)
+    io.imsave(fname=os.path.join(OUT,f"{IMG[:-4]}_classified_image.png"),arr=new_label_image)
     try:
         isinstance(test_class_df,pd.DataFrame)
         logger.info(f"test dataframe detected")
