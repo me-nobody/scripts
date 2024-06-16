@@ -19,7 +19,7 @@ echo "check TEST IMAGE and LABEL IMAGE present for nuclei_features.py"
 echo "check MODEL, X_TRAIN for scaling,INPUT_FEATURES.csv for features, LABEL image
       present for classify_image.py"
 
-for file in $(ls /users/ad394h/Documents/nuclei_segment/data/gfp_normal_mixed_images/);
+for file in $(ls /users/ad394h/Documents/nuclei_segment/data/gfp_positive_images/);
 do 
     echo $file
     cp /users/ad394h/Documents/nuclei_segment/data/gfp_positive_images/$file /users/ad394h/Documents/nuclei_segment/data/
