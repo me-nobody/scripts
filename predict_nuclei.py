@@ -2,6 +2,7 @@
 # StarDist and HistomicsTK installed
 
 import sys
+import time
 import numpy as np
 import skimage as ski
 from skimage import io
@@ -19,12 +20,17 @@ lbl_cmap = random_label_cmap()
 import os
 import logging
 
-logging.basicConfig(filename='/users/ad394h/Documents/nuclei_segment/logs/nuclei_segment.txt', filemode='w',level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+timestr = time.strftime("%Y%m%d-%H%M%S")
+
+log_file = '/users/ad394h/Documents/nuclei_segment/logs/classify_nuclei.txt'
+
+
+logging.basicConfig(filename = log_file, level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
 
-IMG = "test_image.jpg"
+IMG = "image_4_GFP.ndpi_8_18.jpg"
 
 IN = "/users/ad394h/Documents/nuclei_segment/data/"
 DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/"

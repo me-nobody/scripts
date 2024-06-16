@@ -2,6 +2,7 @@
 # StarDist and HistomicsTK installed
 
 import sys
+import time
 import numpy as np
 import skimage as ski
 from skimage import io
@@ -15,15 +16,15 @@ import pandas as pd
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
-log_file = '/users/ad394h/Documents/nuclei_segment/logs/predict_features_{}.txt'.format(timestr)
+log_file = '/users/ad394h/Documents/nuclei_segment/logs/classify_nuclei.txt'
 
-logging.basicConfig(filename=log_file, filemode='a',level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-timestr = time.strftime("%Y%m%d-%H%M%S")
 
 
-IMG = "test_image.jpg"
+IMG = "image_4_GFP.ndpi_8_18.jpg"
 LABEL = "predicted_image_label.tiff"
 IN = "/users/ad394h/Documents/nuclei_segment/data/"
 OUT = "/users/ad394h/Documents/nuclei_segment/data/"
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     label = io.imread(label_file)
     logger.info(f"image shape {image.shape}")
     logger.info(f"label shape {label.shape}")
-    tumor_features = htk.features.compute_nuclei_features(label,image)
-    tumor_features.to_csv(os.path.join(OUT,"tumor_features.csv"),index=False)
+    nuclei_features = htk.features.compute_nuclei_features(label,image)
+    nuclei_features.to_csv(os.path.join(OUT,"nuclei_features.csv"),index=False)
     
     

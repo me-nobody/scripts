@@ -13,13 +13,19 @@
 #SBATCH --cpus-per-task=1       # number of processor cores to be assigned for each task, default is 1, increase for multi-threaded runs
 #SBATCH --ntasks-per-node=8     # number of tasks to be launched on each allocated node
 
+#######################################################
+echo "check TEST IMAGE present for predict_nuclei.py"
+echo "check TEST IMAGE and LABEL IMAGE present for nuclei_features.py"
+echo "check MODEL, X_TRAIN for scaling,INPUT_FEATURES.csv for features, LABEL image
+      present for classify_image.py"
+
 ############# LOADING MODULES (optional) #############
 module purge
 module load libs/stardist/0.9.1
 sleep 2
 ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
-# python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei.py
 echo "over with job"
 ############# CHANGE #############
 module purge
@@ -27,7 +33,7 @@ module load libs/histomicstk
 sleep 2
 # ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
-# python3 /users/ad394h/Documents/nuclei_segment/scripts/nuclei_features.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features.py
 echo "over with job"
 ############# CHANGE #############
 module purge
@@ -35,6 +41,6 @@ module load apps/anaconda3
 sleep 2
 # ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
-python3 /users/ad394h/Documents/nuclei_segment/scripts/classify_image.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/train_classifier_and_classify_nuclei.py
 echo "over with job"
 
