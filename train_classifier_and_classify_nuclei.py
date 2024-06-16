@@ -3,6 +3,7 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 import sys
 import os
 import time
+import glob
 import logging
 
 import numpy as np
@@ -33,7 +34,7 @@ DATA_PATH ="/users/ad394h/Documents/nuclei_segment/data/"
 
 MODEL_PATH = "/users/ad394h/Documents/nuclei_segment/models/"
 
-IMG = "image_4_GFP.ndpi_8_18.jpg"
+IMG = glob.glob("/users/ad394h/Documents/nuclei_segment/data/*.jpg")[0]
 
 LBL_IMG = f"{IMG[:-4]}_predicted_image_label.tiff"
 input_csv = "nuclei_features.csv"

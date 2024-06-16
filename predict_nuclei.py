@@ -4,6 +4,7 @@
 import sys
 import time
 import numpy as np
+import glob
 import skimage as ski
 from skimage import io
 from skimage.color import rgb2hed, hed2rgb
@@ -29,11 +30,10 @@ logging.basicConfig(filename = log_file, level=logging.INFO, format='%(name)s - 
 logger = logging.getLogger(__name__)
 
 
-
-IMG = "image_4_GFP.ndpi_8_18.jpg"
-
 IN = "/users/ad394h/Documents/nuclei_segment/data/"
 DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/"
+
+IMG = glob.glob("/users/ad394h/Documents/nuclei_segment/data/*.jpg")[0]
 
 def extract_hematoxylin(IMG):
     img = ski.io.imread(os.path.join(IN,IMG))
@@ -42,7 +42,7 @@ def extract_hematoxylin(IMG):
     deconv_img = hed2rgb(np.stack((img[:,:,0],null,null),axis=-1))
     deconv_img = deconv_img*255
     deconv_img = deconv_img.astype(np.uint8)
-    ski.io.imsave(DECONV_OUT+f"{IMG[:-4]}_deconv_image.jpg",deconv_img)
+    # ski.io.imsave(DECONV_OUT+f"{IMG[:-4]}_deconv_image.jpg",deconv_img)
     return deconv_img
 
 

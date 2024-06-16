@@ -21,32 +21,34 @@ echo "check MODEL, X_TRAIN for scaling,INPUT_FEATURES.csv for features, LABEL im
 
 for file in $(ls /users/ad394h/Documents/nuclei_segment/data/gfp_normal_mixed_images/);
 do 
-  echo $file;
+    echo $file
+    cp /users/ad394h/Documents/nuclei_segment/data/gfp_normal_mixed_images/$file /users/ad394h/Documents/nuclei_segment/data/
+    ############# LOADING MODULES (optional) #############
+    module purge
+    module load libs/stardist/0.9.1
+    sleep 2
+    ############# MY CODE #############
+    echo "Hello from $SLURM_JOB_NODELIST"
+    # python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei.py
+    echo "over with job"
+    ############# CHANGE #############
+    module purge
+    module load libs/histomicstk
+    sleep 2
+    # ############# MY CODE #############
+    echo "Hello from $SLURM_JOB_NODELIST"
+    # python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features.py
+    echo "over with job"
+    ############# CHANGE #############
+    module purge
+    module load apps/anaconda3
+    sleep 2
+    # ############# MY CODE #############
+    echo "Hello from $SLURM_JOB_NODELIST"
+    # python3 /users/ad394h/Documents/nuclei_segment/scripts/train_classifier_and_classify_nuclei.py
+    echo "over with job"
+    rm /users/ad394h/Documents/nuclei_segment/data/$file
+
 done  
 
-
-############# LOADING MODULES (optional) #############
-module purge
-module load libs/stardist/0.9.1
-sleep 2
-############# MY CODE #############
-echo "Hello from $SLURM_JOB_NODELIST"
-python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei.py
-echo "over with job"
-############# CHANGE #############
-module purge
-module load libs/histomicstk
-sleep 2
-# ############# MY CODE #############
-echo "Hello from $SLURM_JOB_NODELIST"
-python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features.py
-echo "over with job"
-############# CHANGE #############
-module purge
-module load apps/anaconda3
-sleep 2
-# ############# MY CODE #############
-echo "Hello from $SLURM_JOB_NODELIST"
-python3 /users/ad394h/Documents/nuclei_segment/scripts/train_classifier_and_classify_nuclei.py
-echo "over with job"
 
