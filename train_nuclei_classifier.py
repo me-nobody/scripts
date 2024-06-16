@@ -70,8 +70,8 @@ def prepare_data(*files):
     xtest_df = pd.DataFrame(X_test)
     xtrain_df.columns = input_cols
     xtest_df.columns = input_cols
-    xtrain_df.to_csv(os.path.join(DATA_PATH,"X_train.csv"),index=False)
-    xtest_df.to_csv(os.path.join(DATA_PATH,"X_test.csv"),index=False)
+    # xtrain_df.to_csv(os.path.join(DATA_PATH,"X_train.csv"),index=False)
+    # xtest_df.to_csv(os.path.join(DATA_PATH,"X_test.csv"),index=False)
     return X_train, X_test,train_targets,test_targets
     
 def train_data(*vars):
@@ -79,6 +79,7 @@ def train_data(*vars):
     from sklearn.ensemble import AdaBoostClassifier
     model = AdaBoostClassifier(n_estimators=100, algorithm="SAMME", random_state=0)
     model.fit(X_train, train_targets)
+    joblib.dump(model,os.path.join(MODEL_PATH,"adaboost_tumor.joblib"))
     # get the scores
     # accuracy
     train_accuracy = model.score(X_train, train_targets)
