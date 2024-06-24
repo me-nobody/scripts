@@ -1,4 +1,3 @@
-# mamba environment in MARS/users/ad394h/miniforge-pypy3/envs/
 # StarDist and HistomicsTK installed
 
 import sys
@@ -32,8 +31,8 @@ logging.basicConfig(filename = log_file, level=logging.INFO, format='%(name)s - 
 logger = logging.getLogger(__name__)
 
 
-IN = "/users/ad394h/Documents/nuclei_segment/data/gfp_negative_images/"
-DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/gfp_negative_label_images/"
+IN = "/users/ad394h/Documents/nuclei_segment/data/val_lab_he_images/"
+DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/val_he_image_labels/"
 
 
 
@@ -51,28 +50,28 @@ DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/gfp_negative_label_ima
 def segment_nuclei(inp_image):
     model_dict ={} # this is an expensive way to create multiple images of the model. the error messages
                    # in the slurm cluster may be due to multiple processes trying to access the same model
-    model_id = inp_image[64:-4]               
+    model_id = inp_image[:-4]               
     model_dict[model_id] = StarDist2D.from_pretrained('2D_versatile_he')    
     if not model_dict[model_id]:
         logger.info("model has not been loaded")
     else:
         logger.info("model exists")
     # read the image
-    image = io.imread(inp_image)
+    image = io.imread(os.path.join(IN,inp_image))
     # mormalize the image 
     image = normalize(image, 1,99.8)
     # call the model
     img_label, _ = model_dict[model_id].predict_instances(image)   # this should call unique instances of the model     
     num_nuclei = np.unique(img_label).shape[0]
-    out_image = f"{inp_image[64:-4]}_predicted_labels.png"
+    out_image = f"{inp_image[:-4]}_predicted_labels.png"
     io.imsave(os.path.join(DECONV_OUT,out_image),img_label)
     logger.info(f"image {inp_image[:-4]} has {num_nuclei} nuclei")    
     return num_nuclei,img_label
 
-if __name__ == '__main__':    
+if __name__ == '__main__':  
     pool = Pool(10)
     # Create a multiprocessing Pool
-    pool.map(segment_nuclei, glob.glob("/users/ad394h/Documents/nuclei_segment/data/gfp_negative_images/*.jpg")) 
+    pool.map(segment_nuclei, os.listdir(IN)) 
 
     
     

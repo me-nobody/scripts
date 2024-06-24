@@ -27,9 +27,9 @@ logger = logging.getLogger(__name__)
 
 
 
-IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/gfp_negative_images/"
-LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/gfp_negative_label_images/"
-OUT = "/users/ad394h/Documents/nuclei_segment/data/gfp_negative_features/"
+IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/val_he_images/"
+LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/val_he_image_labels/"
+OUT = "/users/ad394h/Documents/nuclei_segment/data/val_he_images_features/"
 
 # create pairs for sending to histomics image feature generator
 def create_image_label_pair(IN_IMG,LBL_IMG):
@@ -55,11 +55,12 @@ def extract_features(image_pair):
     label = io.imread(label_path)        
     image = image[:,:,0]
     image_name = image_name[:21]
-    logger.info(f"image name {image_name}")
-    logger.info(f"image shape {image.shape} label shape {label.shape}")
+    # logger.info(f"image name {image_name}")
+    # logger.info(f"image shape {image.shape} label shape {label.shape}")
     nuclei_features = htk.features.compute_nuclei_features(label,image)    
     # nuclei_features.to_csv(os.path.join(OUT,"{image_name}_nuclei_features.csv".format(image_name)),index=False)
-    return nuclei_features,image_name
+    return nuclei_features,image_name   # when we want individual feature df for each image
+    # return nuclei_features  # when we want to combine all the feature df
 
 if __name__ == "__main__":
     pool = Pool(10)
@@ -72,6 +73,10 @@ if __name__ == "__main__":
         features,name = result
         name = name + "_nuclei_features.csv"
         features.to_csv(os.path.join(OUT,name))
+    # results_df = pd.concat(results)
+    # logger.info(f"results_df shape {results_df.shape}")
+    # results_df.to_csv(os.path.join(OUT,"gfp_negative_nuclei_features.csv"),index=False)
+        
 
 
 
