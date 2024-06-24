@@ -36,9 +36,6 @@ FEATURE_PATH = "/users/ad394h/Documents/nuclei_segment/data/val_he_images_featur
 
 LABEL_PATH = "/users/ad394h/Documents/nuclei_segment/data/val_he_image_labels/"
 
-IMG = glob.glob("/users/ad394h/Documents/nuclei_segment/data/*.jpg")[0]
-
-LBL_IMG = f"{IMG[:-4]}_predicted_image_label.tiff"
 
 input_csv = "nuclei_features.csv"
 
