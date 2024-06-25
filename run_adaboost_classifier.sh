@@ -35,6 +35,7 @@ module load apps/anaconda3
 sleep 2
 ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
-python3 /users/ad394h/Documents/nuclei_segment/scripts/train_adaBoost_classify_nuclei_230624_update.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/adaBoost_classify_nuclei_240624_update.py
+# python3 /users/ad394h/Documents/nuclei_segment/scripts/adaBoost_feature_importances.py
 echo "over with job"
 

@@ -72,7 +72,7 @@ if __name__ == "__main__":
     for result in results:
         features,name = result
         name = name + "_nuclei_features.csv"
-        features.to_csv(os.path.join(OUT,name))
+        features.to_csv(os.path.join(OUT,name),index=False)
     # results_df = pd.concat(results)
     # logger.info(f"results_df shape {results_df.shape}")
     # results_df.to_csv(os.path.join(OUT,"gfp_negative_nuclei_features.csv"),index=False)
