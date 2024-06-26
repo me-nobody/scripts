@@ -7,12 +7,12 @@ import skimage as ski
 from skimage import io
 
 import os
+rom multiprocessing import Pool
 import time
 import glob
 import logging
 
-from multiprocessing import Pool
-
+f
 
 import histomicstk as htk
 import pandas as pd

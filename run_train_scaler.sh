@@ -2,7 +2,7 @@
 
 ############# SLURM SETTINGS #############
 #SBATCH --account=none   # account name (mandatory), if the job runs under a project then it'll be the project name, if not then it should =none
-#SBATCH --job-name=adaboost_classifier   # some descriptive job name of your choice
+#SBATCH --job-name=MinMaxScaler   # some descriptive job name of your choice
 #SBATCH --output=%x-%j_out.txt      # output file name will contain job name + job ID
 #SBATCH --error=%x-%j_err.txt      # error file name will contain job name + job ID
 #SBATCH --partition=nodes        # which partition to use, default on MARS is “nodes"
@@ -35,9 +35,6 @@ module load apps/anaconda3
 sleep 2
 ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
-
-python3 /users/ad394h/Documents/nuclei_segment/scripts/adaBoost_classify_nuclei_260624_update.py
-# python3 /users/ad394h/Documents/nuclei_segment/scripts/adaBoost_classify_nuclei_240624_update.py
-# python3 /users/ad394h/Documents/nuclei_segment/scripts/adaBoost_feature_importances.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/train_MinMaxScaler.py
 echo "over with job"
 
