@@ -31,6 +31,8 @@ IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/val_he_images/"
 LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/val_he_image_labels/"
 OUT = "/users/ad394h/Documents/nuclei_segment/data/val_he_images_features/"
 
+
+
 # create pairs for sending to histomics image feature generator
 def create_image_label_pair(IN_IMG,LBL_IMG):
     image_file_list = os.listdir(IN_IMG)
@@ -42,9 +44,35 @@ def create_image_label_pair(IN_IMG,LBL_IMG):
     assert all(img[-4:] == ".jpg" for img in image_file_list),"non jpeg files"
     assert all(img[-4:] == ".png" for img in label_file_list),"non png files"
     # matched image and label
-    image_file_pair_list = [(a,b) for a in image_file_list for b in label_file_list if a[:21] == b[:21]]
+    # for a in image_file_list:
+    #     logger.info(f"image {a[:-4]}")
+    # for b in label_file_list:
+    #     logger.info(f"label {b[:-21]}")    
+    image_file_pair_list = [(a,b) for a in image_file_list for b in label_file_list if a[:-4] == b[:-21]]
         
     return image_file_pair_list    
+
+
+def extract_hematoxylin(IMAGE):
+    # img = ski.io.imread(os.path.join(IN_IMG,IMAGE))
+    # create stain to color map
+    stain_color_map = htk.preprocessing.color_deconvolution.stain_color_map
+
+    # specify stains of input image
+    stains = ['hematoxylin',  # nuclei stain
+              'eosin',        # cytoplasm stain
+              'null']         # set to null if input contains only two stains
+
+    # create stain matrix
+    W = np.array([stain_color_map[st] for st in stains]).T
+
+    # perform standard color deconvolution
+    imDeconvolved = htk.preprocessing.color_deconvolution.color_deconvolution(IMAGE, W)
+
+    deconv_image = imDeconvolved.Stains[:,:,0]
+
+    return deconv_image
+
 
 def extract_features(image_pair):
     nuclei_features_dict = {}
@@ -52,30 +80,32 @@ def extract_features(image_pair):
     image_path = os.path.join(IN_IMG,image_name)
     label_path = os.path.join(LBL_IMG,label_name)
     image = io.imread(image_path)
-    label = io.imread(label_path)        
-    image = image[:,:,0]
-    image_name = image_name[:21]
-    # logger.info(f"image name {image_name}")
-    # logger.info(f"image shape {image.shape} label shape {label.shape}")
-    nuclei_features = htk.features.compute_nuclei_features(label,image)    
-    # nuclei_features.to_csv(os.path.join(OUT,"{image_name}_nuclei_features.csv".format(image_name)),index=False)
-    return nuclei_features,image_name   # when we want individual feature df for each image
-    # return nuclei_features  # when we want to combine all the feature df
+    label = io.imread(label_path)   
+    if isinstance(image,np.ndarray) and isinstance(label,np.ndarray):
+        hematoxylin_img = extract_hematoxylin(image)
+        image_name = image_name[:-4]
+        nuclei_features = htk.features.compute_nuclei_features(im_label=label,im_nuclei=hematoxylin_img)    
+        # nuclei_features.to_csv(os.path.join(OUT,"{}_nuclei_features.csv".format(image_name)),index=False)
+        # return nuclei_features,image_name   # when we want individual feature df for each image
+        return nuclei_features  # when we want to combine all the feature df
+    else:
+        logger.info("image and label files not generated")
 
 if __name__ == "__main__":
     pool = Pool(10)
     image_pair_list = create_image_label_pair(IN_IMG=IN_IMG,LBL_IMG=LBL_IMG)
+    logger.info(f"{len(image_pair_list)} image pairs created")
     # parallely execute feature extraction
     results = pool.map(extract_features, image_pair_list)
     pool.close()
     pool.join()
-    for result in results:
-        features,name = result
-        name = name + "_nuclei_features.csv"
-        features.to_csv(os.path.join(OUT,name),index=False)
-    # results_df = pd.concat(results)
-    # logger.info(f"results_df shape {results_df.shape}")
-    # results_df.to_csv(os.path.join(OUT,"gfp_negative_nuclei_features.csv"),index=False)
+    # for result in results:
+    #     features,name = result
+    #     name = name + "_nuclei_features.csv"
+    #     features.to_csv(os.path.join(OUT,name),index=False)
+    results_df = pd.concat(results)
+    logger.info(f"results_df shape {results_df.shape}")
+    results_df.to_csv(os.path.join(OUT,"control_nuclei_features_val.csv"),index=False)
         
 
 

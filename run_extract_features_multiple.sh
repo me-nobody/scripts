@@ -2,7 +2,7 @@
 
 ############# SLURM SETTINGS #############
 #SBATCH --account=none   # account name (mandatory), if the job runs under a project then it'll be the project name, if not then it should =none
-#SBATCH --job-name=predict_nuclei_multiple   # some descriptive job name of your choice
+#SBATCH --job-name=extract_features_multiple   # some descriptive job name of your choice
 #SBATCH --output=%x-%j_out.txt      # output file name will contain job name + job ID
 #SBATCH --error=%x-%j_err.txt      # error file name will contain job name + job ID
 #SBATCH --partition=nodes        # which partition to use, default on MARS is “nodes"
@@ -27,6 +27,8 @@ module load libs/histomicstk
 sleep 2
 # ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
+# python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features_updated.py
+
 python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features_multiple.py
 echo "over with job"
 ############# CHANGE #############
