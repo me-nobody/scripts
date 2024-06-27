@@ -110,13 +110,13 @@ def percent_nuclei():
     percent_tumor_list = []
     for csv in prediction_dfs:
         percent_tumor = 0.0
-        df = pd.read_csv(os.path.join(PREDICT_PATH,csv))
+        df = pd.read_csv(os.path.join(PREDICT_PATH,csv),encoding='unicode_escape')
         if isinstance(df,pd.DataFrame):
             tumor = df['class'] == 1.0
             count_tumor = len(df[tumor])
             percent_tumor = (count_tumor/df.shape[0])*100
             percent_tumor_list.append(percent_tumor)     
-            logger.info(f"% tumor in {csv[:-20] is {percent_tumor}}")
+            logger.info(f"% tumor in {csv[:-20]} is {percent_tumor}")
         else:
             logger.info("csv not formatted properly")    
     percent_tumor_array = np.array(percent_tumor_list)      
@@ -124,7 +124,7 @@ def percent_nuclei():
     plt.figure(figsize=(12,12))
     sns.set_style('whitegrid')
     sns.set(font_scale=0.8)     
-    sns.histplot(data=percent_tumor_array,binrange=(0,100),legend=False)
+    sns.histplot(data=percent_tumor_array,binrange=(0,100),legend=False,stat='percent')
     plt.savefig(os.path.join(PREDICT_PATH,"percent_tumor.png"))
 
 
