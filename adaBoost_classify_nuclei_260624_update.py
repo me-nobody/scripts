@@ -113,7 +113,7 @@ def percent_nuclei():
         df = pd.read_csv(os.path.join(PREDICT_PATH,csv),encoding='unicode_escape')
         if isinstance(df,pd.DataFrame):
             tumor = df['class'] == 1.0
-            count_tumor = len(df[tumor])
+            count_tumor = df[tumor].shape[0]
             percent_tumor = (count_tumor/df.shape[0])*100
             percent_tumor_list.append(percent_tumor)     
             logger.info(f"% tumor in {csv[:-20]} is {percent_tumor}")
