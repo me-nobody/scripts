@@ -31,8 +31,8 @@ logging.basicConfig(filename = log_file, level=logging.INFO, format='%(name)s - 
 logger = logging.getLogger(__name__)
 
 
-IN = "/users/ad394h/Documents/nuclei_segment/data/karin_he_images_40X/"
-DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/karin_he_image_labels_40X/"
+IN = "/users/ad394h/Documents/nuclei_segment/data/val_lab_he_images/"
+DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/val_he_image_labels/"
 
 
 
@@ -61,7 +61,7 @@ def segment_nuclei(inp_image):
     # mormalize the image 
     image = normalize(image, 1,99.8)
     # call the model
-    img_label, _ = model_dict[model_id].predict_instances(image,nms_thresh=0.3,prob_thresh=0.56,sparse=False,scale=4)   # this should call unique instances of the model     
+    img_label, _ = model_dict[model_id].predict_instances(image)   # this should call unique instances of the model     
     num_nuclei = np.unique(img_label).shape[0]
     out_image = f"{inp_image[:-4]}_predicted_labels.png"
     io.imsave(os.path.join(DECONV_OUT,out_image),img_label)

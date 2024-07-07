@@ -19,8 +19,8 @@ import openslide
 from PIL import Image
 
 #Load the slide file (svs) into an object.
-IN ="/users/ad394h/Documents/nuclei_segment/training_data/karin/"
-OUT = "/users/ad394h/Documents/nuclei_segment/training_data/normal/"
+IN ="/users/ad394h/Documents/nuclei_segment/data/karin_he_ndpi/"
+OUT = "/users/ad394h/Documents/nuclei_segment/data/karin_he_images_40X/"
 
 slides = os.listdir(IN)
 
@@ -32,7 +32,7 @@ for slide in slides:
     slide = open_slide(os.path.join(IN,slide))
 
     # convert to deepzoom project
-    tiles = DeepZoomGenerator(slide, tile_size=1792, overlap=0, limit_bounds=False)
+    tiles = DeepZoomGenerator(slide, tile_size=1024, overlap=0, limit_bounds=False)
     logger.info(f"The number of levels in the tiles object are: {tiles.level_count}")
 
     logger.info(f"The dimensions of data in each level are: {tiles.level_dimensions}")
@@ -46,7 +46,7 @@ for slide in slides:
 
     for row in range(rows):
         for col in range(cols):
-            tile_name = slide_name+ "_" + '%d_%d' % (col, row)
+            tile_name = slide_name[:-4]+ "_" + '%d_%d' % (col, row)
             tile_name = os.path.join(OUT,tile_name)
             # logger.info(f"Now saving tile with title: {tile_name}")
             temp_tile = tiles.get_tile(15, (col, row))

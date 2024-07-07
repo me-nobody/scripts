@@ -36,10 +36,8 @@ FEATURE_PATH = "/users/ad394h/Documents/nuclei_segment/data/val_he_images_featur
 
 LABEL_PATH = "/users/ad394h/Documents/nuclei_segment/data/val_he_image_labels/"
 
-PREDICT_PATH = "/users/ad394h/Documents/nuclei_segment/data/val_he_images_predictions/"
 
-CLASSIFIED_IMG_PATH = "/users/ad394h/Documents/nuclei_segment/data/val_he_classified_images/"
-
+input_csv = "nuclei_features.csv"
 
 training_data = "final_GFP_train_df.csv"
 
@@ -132,16 +130,15 @@ def create_feature_label_pair(FEATURE_PATH,LABEL_PATH):
     return feature_label_pair_list    
 
 
-def predict_class(features,scaler=None,model=None):
+def predict_class(input_csv=None,scaler=None,model=None):
     # predict class has to identify which image it is predicting for
     logger.info("predicting class")
     # get the features list
-    csv_file_name = features[:-4]+"predicted_classes.csv"
-    feature_file = os.path.join(FEATURE_PATH,features)
-    
-    if os.path.isfile(feature_file):
+    csv_file = os.path.join(OUT,input_csv)
+    csv_file_name = input_csv[:-4]
+    if os.path.isfile(csv_file):
         logger.info(f"input csv file read")
-    test_img_ft = pd.read_csv(feature_file)
+    test_img_ft = pd.read_csv(csv_file)
     # extract the image labels
     test_img_ft_labels = test_img_ft[["Label"]]
     test_img_ft.drop('Label',axis=1,inplace=True)
@@ -151,7 +148,7 @@ def predict_class(features,scaler=None,model=None):
     predictions = model.predict(test_img_ft)
     predictions = pd.DataFrame(predictions,columns=["class"])
     test_classes = pd.merge(test_img_ft_labels,predictions,left_index=True,right_index=True)
-    test_classes.to_csv(os.path.join(PREDICT_PATH,csv_file_name),header=True,index=False)
+    test_classes.to_csv(os.path.join(OUT,"test_classes.csv"),header=True,index=False)
     logger.info(f"columns are {test_classes.columns}")
     return test_class_df
 
@@ -173,22 +170,19 @@ def predict_with_saved_model(X_test,test_targets,scaler):
 
 
 
-def cell_types(test_class_df,features):
+def cell_types(test_class_df):
     class_dict = {0:'normal',1:'tumor'}
     test_class_df['class'] = test_class_df['class'].map(class_dict)
     for a in test_class_df['class'].value_counts().items():
-        logger.info(f"class {a[0]} has {a[1]} nuclei in {features[:-4]}")
+        logger.info(f"class {a[0]} has {a[1]} nuclei")
         percent_tumor =0.0
         if a[0] == 'tumor':
             percent_tumor = (int(a[1])/test_class_df.shape[0])*100
-            logger.info(f"percentage of tumor cells {percent_tumor} in {features[:-4]}")    
+            logger.info(f"percentage of tumor cells {percent_tumor}")    
 
 
 
 def relabel_image(class_df,label_image):
-    logger.info("reading file")
-    img_file = os.path.join(LABEL_PATH,label_image)
-    labels = io.imread(img_file)
     # extract the 2 columns of the label dataframe as arrays
     label_objects = class_df.loc[:,'Label']
     labels_class = class_df.loc[:,'class']+1 # upindex the classes to remove 0 as a class
@@ -207,7 +201,7 @@ def relabel_image(class_df,label_image):
         if idx > 0 and idx in label_dict.keys():
             flat_new_labels[count] = label_dict[idx]      # set the value of new labels as the value of label dictionary
     # reshape the new label image to the original shape
-    new_labels = flat_new_labels.reshape(label_image.shape)   
+    new_labels =flat_new_labels.reshape(label_image.shape)   
     return new_labels
 
 
@@ -215,35 +209,36 @@ def relabel_image(class_df,label_image):
 if __name__ == "__main__":
     logger.info("start train classifier and classify nuclei")
     logger.info("preparing data ....")
-    # get the feature label pair list
-    feature_label_pair_list = create_feature_label_pair(FEATURE_PATH,LABEL_PATH)
-    # X_train, X_test,train_targets,test_targets,scaler = prepare_data(training_data=training_data)    
+    # create_feature_label_pair(FEATURE_PATH,LABEL_PATH)
+    X_train, X_test,train_targets,test_targets,scaler = prepare_data(training_data=training_data)    
     logger.info("training data ...")
     # model = train_data(X_train, X_test,train_targets,test_targets)
     try:
         model_path = os.path.join(MODEL_PATH,"adaboost_classify_nuclei.joblib")
-        with open(model_path, "rb") as f_model:
-            model = joblib.load(f_model)
     except FileNotFoundError:
         print("model file not found")
-    if os.path.exists(model_path) and isinstance(model_path,joblib):
+
+    if os.path.exists(model_path) and isinstance(model_path,AdaBoostClassifier):
         logger.info(f"adaboost classifier obtained")
     else:
-        logger.info("please check model is the saved model")    
-    # predict_with_saved_model(X_test,test_targets,scaler)   
-    for pair in feature_label_pair_list:
-        features,label_image = pair
-        test_class_df,csv_file_name = predict_class(features=features,scaler=scaler,model=model)
-        try:
-            isinstance(test_class_df,pd.DataFrame)
-            logger.info(f"test dataframe detected")
-        except AssertionError as err:
-            logger.info(f"test dataframe not found")  
-        cell_types(test_class_df=test_class_df,features=features)
-        new_label_image = relabel_image(class_df = test_class_df,label_image = label_image)
-        if new_label_image is None:
-            logger.info(f"relabelled image missing")    
-        io.imsave(fname=os.path.join(CLASSIFIED_IMG_PATH,f"{features[:-4]}_classified_image.png"),arr=new_label_image)
-    
+        logger.info("please check model is AdaBoostClassifier")    
+    predict_with_saved_model(X_test,test_targets,scaler)    
+    # try:
+    #     os.path.join(OUT,LBL_IMG)
+    #     logger.info(f"{LBL_IMG} image file recongnized")
+    # except AssertionError as err:
+    #     logger.info(f"label image not found")
+    # label_image = read_label(LBL_IMG)
+    # assert input_csv is not None,logger.info(f"input csv not found")
+    # test_class_df = predict_class(input_csv=input_csv,scaler=scaler,model=model)
+    # new_label_image = relabel_image(test_class_df,label_image)
+    # assert new_label_image is not None,logger.info(f"relablled image missing")    
+    # io.imsave(fname=os.path.join(OUT,f"{IMG[:-4]}_classified_image.png"),arr=new_label_image)
+    # try:
+    #     isinstance(test_class_df,pd.DataFrame)
+    #     logger.info(f"test dataframe detected")
+    # except AssertionError as err:
+    #     logger.info(f"test dataframe not found")    
+    # cell_types(test_class_df)
     
     

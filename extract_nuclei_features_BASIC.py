@@ -11,7 +11,6 @@ import time
 import glob
 import logging
 
-from multiprocessing import Pool
 
 
 import histomicstk as htk
@@ -27,9 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 
-IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/karin_he_images_40X/"
-LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/karin_he_image_labels_40X/"
-OUT = "/users/ad394h/Documents/nuclei_segment/data/karin_he_images_40X_features/"
+IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/anu_he_cd31_claudin_images_40X/"
+LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/anu_he_cd31_claudin_image_labels_40X/"
+OUT = "/users/ad394h/Documents/nuclei_segment/data/anu_he_cd31_claudin_images_40X_features/"
 
 
 
@@ -92,21 +91,20 @@ def extract_features(image_pair):
         logger.info("image and label files not generated")
 
 if __name__ == "__main__":
-    pool = Pool(10)
+    
     image_pair_list = create_image_label_pair(IN_IMG=IN_IMG,LBL_IMG=LBL_IMG)
     logger.info(f"{len(image_pair_list)} image pairs created")
     # parallely execute feature extraction
-    results = pool.map(extract_features, image_pair_list)
-    pool.close()
-    pool.join()
-    for result in results:
-        features,name = result
-        name = name + "_nuclei_features.csv"
-        features.to_csv(os.path.join(OUT,name),index=False)
-    # results_df = pd.concat(results)
-    # logger.info(f"results_df shape {results_df.shape}")
-    # results_df.to_csv(os.path.join(OUT,"control_nuclei_features_karin.csv"),index=False)
+    for pair in image_pair_list:
+        try:
+            nuclei_features,image_name = extract_features(pair)    
+            nuclei_features.to_csv(os.path.join(OUT,"{}_nuclei_features.csv".format(image_name)),index=False)
         
+        except IndexError as err:
+            image_name,label_name = pair
+            logger.info(f"{label_name} has calculation errors")
+            continue
+
 
 
 

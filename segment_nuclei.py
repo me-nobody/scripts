@@ -1,4 +1,3 @@
-# mamba environment in MARS/users/ad394h/miniforge-pypy3/envs/
 # StarDist and HistomicsTK installed
 
 import sys
@@ -30,24 +29,27 @@ logging.basicConfig(filename = log_file, level=logging.INFO, format='%(name)s - 
 logger = logging.getLogger(__name__)
 
 
-IN = "/users/ad394h/Documents/nuclei_segment/data/"
+IN = "/users/ad394h/Documents/nuclei_segment/image3_gfp_positive_images/"
 DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/"
 
-IMG = glob.glob("/users/ad394h/Documents/nuclei_segment/data/*.jpg")[0]
-
-def extract_hematoxylin(IMG):
-    img = ski.io.imread(os.path.join(IN,IMG))
-    img = rgb2hed(img)
-    null = np.zeros_like(img[:,:,0])
-    deconv_img = hed2rgb(np.stack((img[:,:,0],null,null),axis=-1))
-    deconv_img = deconv_img*255
-    deconv_img = deconv_img.astype(np.uint8)
-    # ski.io.imsave(DECONV_OUT+f"{IMG[:-4]}_deconv_image.jpg",deconv_img)
-    return deconv_img
+IMG = ""
 
 
-def segment_nuclei(inp_image):
-    # mormalize the image
+# def extract_hematoxylin(IMG):
+#     img = ski.io.imread(os.path.join(IN,IMG))
+#     img = rgb2hed(img)
+#     null = np.zeros_like(img[:,:,0])
+#     deconv_img = hed2rgb(np.stack((img[:,:,0],null,null),axis=-1))
+#     deconv_img = deconv_img*255
+#     deconv_img = deconv_img.astype(np.uint8)
+#     # ski.io.imsave(DECONV_OUT+f"{IMG[:-4]}_deconv_image.jpg",deconv_img)
+#     return deconv_img
+
+
+def segment_nuclei(inp_image,model):
+    # read image file
+    image = io.imread(os.path.join(IN,inp_image))
+    # normalize the image
     image = normalize(inp_image, 1,99.8)
     # call the model
     img_label, _ = model.predict_instances(image)        
@@ -61,9 +63,9 @@ if __name__ == "__main__":
     else:
         logger.info("model exists")
     
-    deconv_img = extract_hematoxylin(IMG)
-    num_nuclei,img_label = segment_nuclei(deconv_img)
-    inp_image = f"{IMG[:-4]}_predicted_image_label.tiff"
+    # deconv_img = extract_hematoxylin(IMG)
+    num_nuclei,img_label = segment_nuclei(IMG,model)
+    inp_image = f"{IMG[:-4]}_predicted_image_label.png"
     io.imsave(os.path.join(DECONV_OUT,inp_image),img_label)
-    logger.info(f"slide {IMG[:-4]} has {num_nuclei} nuclei")
+    logger.info(f"image {IMG[:-4]} has {num_nuclei} nuclei")
     

@@ -183,7 +183,7 @@ def cell_types(test_class_df,features):
 
 
 def relabel_image(class_df,label_image):
-    if isinstance(class_df,pd.DataFrame):
+    if isinstance(test_class_df,pd.DataFrame):
         logger.info("reading file")
         img_file = os.path.join(LABEL_PATH,label_image)
         labels = io.imread(img_file)

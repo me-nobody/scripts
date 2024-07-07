@@ -21,6 +21,6 @@ module load libs/openslide/4.0.0
 ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
 # python3 /users/ad394h/Documents/nuclei_segment/scripts/openslide_find_resolution.py
-python3 /users/ad394h/Documents/nuclei_segment/scripts/openslide_split_files.py
+ python3 /users/ad394h/Documents/nuclei_segment/scripts/openslide_split_files.py
 
 echo "over with job"

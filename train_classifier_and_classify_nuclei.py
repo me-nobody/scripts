@@ -78,14 +78,14 @@ def prepare_data(*files):
     # Create training and validation sets
     X_train, X_test, train_targets, test_targets = train_test_split(input_df, input_targets_num, test_size=0.25, random_state=42)
     # Impute and scale numeric columns
+    scaler = MinMaxScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
     # save the train and test dataframes
     xtrain_df = pd.DataFrame(X_train)
     xtest_df = pd.DataFrame(X_test)
     xtrain_df.columns = input_cols
     xtest_df.columns = input_cols
-    scaler = MinMaxScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)    
     # xtrain_df.to_csv(os.path.join(DATA_PATH,"X_train.csv"),index=False)
     # xtest_df.to_csv(os.path.join(DATA_PATH,"X_test.csv"),index=False)
     return X_train, X_test,train_targets,test_targets,scaler

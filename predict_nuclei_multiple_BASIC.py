@@ -17,7 +17,7 @@ from stardist.models import StarDist2D
 np.random.seed(6)
 lbl_cmap = random_label_cmap()
 
-from multiprocessing import Pool
+# from multiprocessing import Pool
 
 import os
 import logging
@@ -48,30 +48,25 @@ DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/karin_he_image_labels_
 
 
 def segment_nuclei(inp_image):
-    model_dict ={} # this is an expensive way to create multiple images of the model. the error messages
-                   # in the slurm cluster may be due to multiple processes trying to access the same model
-    model_id = inp_image[:-4]               
-    model_dict[model_id] = StarDist2D.from_pretrained('2D_versatile_he')    
-    if not model_dict[model_id]:
-        logger.info("model has not been loaded")
-    else:
-        logger.info("model exists")
+    
+    name = inp_image.split("/")[-1][:-4]    
+     
     # read the image
-    image = io.imread(os.path.join(IN,inp_image))
+    image = io.imread(inp_image)    
     # mormalize the image 
     image = normalize(image, 1,99.8)
     # call the model
-    img_label, _ = model_dict[model_id].predict_instances(image,nms_thresh=0.3,prob_thresh=0.56,sparse=False,scale=4)   # this should call unique instances of the model     
+    img_label, _ = model.predict_instances(image,nms_thresh=0.3,prob_thresh=0.56,sparse=False,scale=4)   # this should call unique instances of the model     
     num_nuclei = np.unique(img_label).shape[0]
-    out_image = f"{inp_image[:-4]}_predicted_labels.png"
+    out_image = f"{name}_predicted_labels.png"
     io.imsave(os.path.join(DECONV_OUT,out_image),img_label)
     logger.info(f"image {inp_image[:-4]} has {num_nuclei} nuclei")    
-    return num_nuclei,img_label
+    return name
 
 if __name__ == '__main__':  
-    pool = Pool(10)
-    # Create a multiprocessing Pool
-    pool.map(segment_nuclei, os.listdir(IN)) 
-
-    
+    model = StarDist2D.from_pretrained('2D_versatile_he')  
+    for image in glob.glob("/users/ad394h/Documents/nuclei_segment/data/karin_he_images_40X/*.jpg"):
+        name = segment_nuclei(image)
+        logger.info(f"{name}")
+      
     

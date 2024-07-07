@@ -19,21 +19,19 @@ module load libs/stardist/0.9.1
 sleep 2
 ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
-# python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple.py
-
-python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple_BASIC.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple.py
 echo "over with job"
 ############# CHANGE #############
-# module purge
-# module load libs/histomicstk
-# sleep 2
+module purge
+module load libs/histomicstk
+sleep 2
 # ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"
 # python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features.py
 echo "over with job"
 ############# CHANGE #############
-# module purge
-# module load apps/anaconda3
+module purge
+module load apps/anaconda3
 sleep 2
 # ############# MY CODE #############
 echo "Hello from $SLURM_JOB_NODELIST"

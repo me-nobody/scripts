@@ -6,7 +6,7 @@
 #SBATCH --output=%x-%j_out.txt      # output file name will contain job name + job ID
 #SBATCH --error=%x-%j_err.txt      # error file name will contain job name + job ID
 #SBATCH --partition=nodes        # which partition to use, default on MARS is “nodes"
-#SBATCH --time=0-06:00:00       # time limit for the whole run, in the form of d-hh:mm:ss, also accepts mm, mm:ss, hh:mm:ss, d-hh, d-hh:mm
+#SBATCH --time=0-10:00:00       # time limit for the whole run, in the form of d-hh:mm:ss, also accepts mm, mm:ss, hh:mm:ss, d-hh, d-hh:mm
 #SBATCH --mem=24G                # memory required per node, in the form of [num][M|G|T]
 #SBATCH --nodes=1               # number of nodes to allocate, default is 1
 #SBATCH --ntasks=10              # number of Slurm tasks to be launched, increase for multi-process runs ex. MPI
@@ -29,7 +29,10 @@ sleep 2
 echo "Hello from $SLURM_JOB_NODELIST"
 # python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features_updated.py
 
-python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features_multiple.py
+# python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features_multiple.py
+
+python3 /users/ad394h/Documents/nuclei_segment/scripts/extract_nuclei_features_BASIC.py
+
 echo "over with job"
 ############# CHANGE #############
 # module purge

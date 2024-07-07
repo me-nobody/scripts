@@ -61,7 +61,7 @@ def segment_nuclei(inp_image):
     # mormalize the image 
     image = normalize(image, 1,99.8)
     # call the model
-    img_label, _ = model_dict[model_id].predict_instances(image,nms_thresh=0.3,prob_thresh=0.56,sparse=False,scale=4)   # this should call unique instances of the model     
+    img_label, _ = model_dict[model_id].predict_instances(image)   # this should call unique instances of the model     
     num_nuclei = np.unique(img_label).shape[0]
     out_image = f"{inp_image[:-4]}_predicted_labels.png"
     io.imsave(os.path.join(DECONV_OUT,out_image),img_label)
