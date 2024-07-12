@@ -21,7 +21,8 @@ sleep 2
 echo "Hello from $SLURM_JOB_NODELIST"
 # python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple.py
 
-python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple_BASIC.py
+# python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple_BASIC.py
+python3 /users/ad394h/Documents/nuclei_segment/scripts/predict_nuclei_multiple_Confirm_Tumor.py
 echo "over with job"
 ############# CHANGE #############
 # module purge
