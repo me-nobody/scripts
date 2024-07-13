@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 
-IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/anu_he_cd31_claudin_images_40X/"
-LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/anu_he_cd31_claudin_image_labels_40X/"
-OUT = "/users/ad394h/Documents/nuclei_segment/data/anu_he_cd31_claudin_images_40X_features/"
+IN_IMG = "/users/ad394h/Documents/nuclei_segment/data/tumor_normal_pairs/he/"
+LBL_IMG = "/users/ad394h/Documents/nuclei_segment/data/tumor_normal_pairs/labels/"
+OUT = "/users/ad394h/Documents/nuclei_segment/data/tumor_normal_pairs/features/"
 
 
 

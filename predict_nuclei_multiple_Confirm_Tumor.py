@@ -31,7 +31,7 @@ logging.basicConfig(filename = log_file, level=logging.INFO, format='%(name)s - 
 logger = logging.getLogger(__name__)
 
 
-IN = "/users/ad394h/Documents/nuclei_segment/data/tumor_normal_pairs/he/"
+IN = "/users/ad394h/Documents/nuclei_segment/data/tumor_normal_pairs/he/*.jpg"
 DECONV_OUT = "/users/ad394h/Documents/nuclei_segment/data/tumor_normal_pairs/labels/"
 
 
@@ -65,7 +65,7 @@ def segment_nuclei(inp_image):
 
 if __name__ == '__main__':  
     model = StarDist2D.from_pretrained('2D_versatile_he')  
-    for image in glob.glob("/users/ad394h/Documents/nuclei_segment/data/karin_he_images_40X/*.jpg"):
+    for image in glob.glob(IN):
         name = segment_nuclei(image)
         logger.info(f"{name}")
       
